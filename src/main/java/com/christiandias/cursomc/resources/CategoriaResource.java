@@ -29,20 +29,5 @@ public class CategoriaResource {
 		return ResponseEntity.ok().body(obj);
 	}
 
-	@RequestMapping(method=RequestMethod.GET)
-	public List<Categoria> lista() {
-		// PathVariable informa que esse id vai para a url
-		
-		Categoria cat1 = new Categoria(7,"teste");
-		Categoria cat2 = new Categoria(9,"teste2");
-		
-		List<Categoria> list = new ArrayList<Categoria>();
-		
-		list.add(cat1);
-		list.add(cat2);
-		
-		return list;
-		
-	}
 	
 }
