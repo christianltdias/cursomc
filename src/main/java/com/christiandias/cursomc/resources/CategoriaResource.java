@@ -23,7 +23,7 @@ public class CategoriaResource {
 	
 	// Informa que o endpoint desse método é id
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public ResponseEntity<?> find(@PathVariable Integer id) {
+	public ResponseEntity<Categoria> find(@PathVariable Integer id) {
 		// PathVariable informa que esse id vai para a url
 		
 		Categoria obj = service.find(id);
@@ -38,4 +38,10 @@ public class CategoriaResource {
 		return ResponseEntity.created(uri).build();
 	}
 	
+	@RequestMapping(value="/{id}",method=RequestMethod.PUT) // RequestBody - transforma obj em json
+	public ResponseEntity<Void> update(@RequestBody Categoria obj, @PathVariable Integer id){
+		obj.setId(id);
+		obj = service.update(obj);
+		return ResponseEntity.noContent().build();
+	}
 }
