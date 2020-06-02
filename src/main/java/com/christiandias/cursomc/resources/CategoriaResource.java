@@ -1,6 +1,8 @@
 package com.christiandias.cursomc.resources;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.christiandias.cursomc.domain.Categoria;
+import com.christiandias.cursomc.dto.CategoriaDTO;
 import com.christiandias.cursomc.services.CategoriaService;
 
 @RestController
@@ -29,6 +32,17 @@ public class CategoriaResource {
 		Categoria obj = service.find(id);
 		return ResponseEntity.ok().body(obj);
 	}
+	
+	// Informa que o endpoint desse método é id
+		@RequestMapping(method=RequestMethod.GET)
+		public ResponseEntity<List<CategoriaDTO>> findAll() {
+			// PathVariable informa que esse id vai para a url
+			
+			List<Categoria> list = service.findAll();
+			List<CategoriaDTO> listDto = list.stream().map(obj -> new CategoriaDTO(obj)).collect(Collectors.toList());
+			
+			return ResponseEntity.ok().body(listDto);
+		}
 
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<Void> insert(@RequestBody Categoria obj){
