@@ -18,33 +18,33 @@ import javax.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-public class Pedido implements Serializable{
+public class Pedido implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
 	private Date instante;
-	
+
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "pedido")
 	private Pagamento pagamento;
 
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "endereco_de_entrega_id")
 	private Endereco enderecoDeEntrega;
 
 	@OneToMany(mappedBy = "id.pedido")
 	private Set<ItemPedido> itens = new HashSet<ItemPedido>();
-	
+
 	public Pedido() {
 	}
-	
+
 	public Pedido(Integer id, Date instante, Cliente cliente, Endereco enderecoDeEntrega) {
 		super();
 		this.id = id;
@@ -53,7 +53,14 @@ public class Pedido implements Serializable{
 		this.enderecoDeEntrega = enderecoDeEntrega;
 	}
 
+	public double getValorTotal() {
+		double soma = 0.0;
 
+		for (ItemPedido ip : itens) {
+			soma += ip.getSubTotal();
+		}
+		return soma;
+	}
 
 	public Integer getId() {
 		return id;
@@ -79,8 +86,6 @@ public class Pedido implements Serializable{
 		this.pagamento = pagamento;
 	}
 
-	
-	
 	public Cliente getCliente() {
 		return cliente;
 	}
@@ -97,8 +102,6 @@ public class Pedido implements Serializable{
 		this.enderecoDeEntrega = enderecoDeEntrega;
 	}
 
-	
-	
 	public Set<ItemPedido> getItens() {
 		return itens;
 	}
@@ -131,7 +134,5 @@ public class Pedido implements Serializable{
 			return false;
 		return true;
 	}
-	
-	
-	
+
 }
