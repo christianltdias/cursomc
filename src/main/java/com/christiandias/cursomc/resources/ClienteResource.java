@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import com.christiandias.cursomc.domain.Cliente;
 import com.christiandias.cursomc.dto.ClienteDTO;
+import com.christiandias.cursomc.dto.ClienteNewDTO;
 import com.christiandias.cursomc.services.ClienteService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class ClienteResource {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteDTO objDTO) {
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDTO) {
 		Cliente obj = service.fromDTO(objDTO);
 		obj = service.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
