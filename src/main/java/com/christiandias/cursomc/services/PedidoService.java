@@ -7,7 +7,6 @@ import com.christiandias.cursomc.domain.ItemPedido;
 import com.christiandias.cursomc.domain.PagamentoComBoleto;
 import com.christiandias.cursomc.domain.Pedido;
 import com.christiandias.cursomc.domain.enums.EstadoPagamento;
-import com.christiandias.cursomc.repositories.ClienteRepository;
 import com.christiandias.cursomc.repositories.ItemPedidoRepository;
 import com.christiandias.cursomc.repositories.PagamentoRepository;
 import com.christiandias.cursomc.repositories.PedidoRepository;
@@ -72,7 +71,7 @@ public class PedidoService {
 		}
 
 		itemPedidoRepository.saveAll(obj.getItens());
-		emailService.sendOrderConfirmationEmail(obj);
+		emailService.sendOrderConfirmationHtmlEmail(obj);
 		return obj;
 	}
 }

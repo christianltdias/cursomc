@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    
+    <style>
+        h1 {
+            text-align: center;
+            font-size: 18pt;
+            color: #444;
+        }
+        h3 {
+            margin-left: 12px;
+            font-size: 18pt;
+            color: #444;
+        }
+        p{
+            margin-left: 12px;
+            font-size: 14pt;
+        }
+        p#valor{
+            font-size: 16pt;
+            color: #000000;
+            font-weight: 400;
+        }
+        table {
+            margin: 0 auto;
+          width:60%;
+        }
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 15px;
+          text-align: left;
+        }
+        table#t01 tr:nth-child(even) {
+          background-color: rgba(238, 238, 238, 0.44);
+        }
+        table#t01 tr:nth-child(odd) {
+         background-color: #fff;
+        }
+        table#t01 th {
+          background-color: rgb(105, 105, 105);
+          color: white;
+        }
+    </style>
+    <title th
+           :remove="all">Order Confirmation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <div>
+        <h1 >
+            Pedido número: <span th:text="${pedido.id}"> </span>
+        </h1>
+        <p>
+            Instante: <span th:text="${#dates.format(pedido.instante, 'dd/MM/yyyy hh:mm')}"></span>
+        </p>
+        <p >
+            Cliente: <span th:text="${pedido.cliente.nome}"></span>
+        </p>
+        <p>
+            Situação do pagamento: <span th:text="${pedido.pagamento.estadoPagamento.descricao}"></span>
+        </p>
+        <h3 >Detalhes do pedido:</h3>
+        <table id="t01">
+            <tr>
+                <th >Produto</th>
+                <th>Quantidade</th>
+                <th>Preço unitário</th>
+                <th>Subtotal</th>
+            </tr>
+            <tr th:each="item : ${pedido.itens}">
+                <td th:text="${item.produto.nome}">nome</td>
+                <td th:text="${item.quantidade}">quantidade</td>
+                <td th:text="${#numbers.formatDecimal(item.preco, 0, 'POINT', 2,
+'COMMA')}">preco</td>
+                <td th:text="${#numbers.formatDecimal(item.subTotal, 0, 'POINT', 2,
+'COMMA')}">subTotal</td>
+            </tr>
+        </table>
+        <p id="valor">
+            Valor total: <span th:text="${#numbers.formatDecimal(pedido.valorTotal, 0,
+'POINT', 2, 'COMMA')}"></span>
+        </p>
+    </div>
+</body>
+
+</html>
