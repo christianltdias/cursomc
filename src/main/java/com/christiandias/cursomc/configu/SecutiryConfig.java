@@ -3,6 +3,7 @@ package com.christiandias.cursomc.configu;
 import java.util.Arrays;
 
 import com.christiandias.cursomc.security.JWTAuthenticationFilter;
+import com.christiandias.cursomc.security.JWTAuthorizationFilter;
 import com.christiandias.cursomc.security.JWTUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ public class SecutiryConfig extends WebSecurityConfigurerAdapter {
         .anyRequest().authenticated();
 
         http.addFilter(new JWTAuthenticationFilter((authenticationManager()), jwtUtil));
+        http.addFilter(new JWTAuthorizationFilter((authenticationManager()), jwtUtil, userDetailsService));
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
