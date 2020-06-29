@@ -2,6 +2,7 @@ package com.christiandias.cursomc.services;
 
 import javax.mail.internet.MimeMessage;
 
+import com.christiandias.cursomc.domain.Cliente;
 import com.christiandias.cursomc.domain.Pedido;
 
 import org.springframework.mail.SimpleMailMessage;
@@ -14,5 +15,7 @@ public interface EmailService {
 
     void sendOrderConfirmationHtmlEmail(Pedido obj);
 
-	void sendHtmlEmail(MimeMessage msg);
+    void sendHtmlEmail(MimeMessage msg);
+    
+    void sendNewPasswordEmail(Cliente cliente,String newPass);
 }
