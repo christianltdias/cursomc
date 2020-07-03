@@ -1,5 +1,6 @@
 package com.christiandias.cursomc.services;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import com.christiandias.cursomc.services.exceptions.DataIntegrityException;
 import com.christiandias.cursomc.services.exceptions.ObjectNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +41,7 @@ public class ClienteService {
 
 	@Autowired
 	private EnderecoRepository endRepo;
-	
+
 	@Autowired
 	private CidadeRepository cidRepo;
 
@@ -49,10 +51,16 @@ public class ClienteService {
 	@Autowired
 	private S3Service s3Service;
 
+	@Autowired
+	private ImageService imageService;
+
+	@Value("${img.prefix.client.profile}")
+	private String prefix;
+
 	public Cliente find(Integer id) {
 		UserSS user = UserService.authenticated();
 
-		if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())){
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
 			throw new AuthorizationException("Acesso negado");
 		}
 
@@ -94,13 +102,13 @@ public class ClienteService {
 	}
 
 	public Cliente fromDTO(ClienteDTO objDTO) {
-		return new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getEmail(), null, null,null);
+		return new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getEmail(), null, null, null);
 	}
 
 	public Cliente fromDTO(ClienteNewDTO objDto) {
 		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(),
-				TipoCliente.toEnum(objDto.getTipo()),pe.encode(objDto.getSenha()));
-		//Cidade cid = new Cidade(objDto.getCidadeId(), null, null);
+				TipoCliente.toEnum(objDto.getTipo()), pe.encode(objDto.getSenha()));
+		// Cidade cid = new Cidade(objDto.getCidadeId(), null, null);
 		Cidade cid = cidRepo.findById(objDto.getCidadeId()).get();
 		Endereco end = new Endereco(null, objDto.getLogradouro(), objDto.getNumero(), objDto.getComplemento(),
 				objDto.getBairro(), objDto.getCep(), cli, cid);
@@ -120,20 +128,18 @@ public class ClienteService {
 		obj.setEmail(newObj.getEmail());
 	}
 
-	public URI uploadProfilePicture(MultipartFile multipartFile){
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
 		UserSS user = UserService.authenticated();
 
-		if(user == null){
+		if (user == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
-		
-		URI uri = s3Service.uploadFile(multipartFile);
-		Cliente cli = repo.findById(user.getId()).get();
 
-		cli.setImageUrl(uri.toString());
-		repo.save(cli);
+		BufferedImage jpgImage = imageService.getJpgImageFromFile(multipartFile);
+		String filename = prefix + user.getId() + ".jpg";
 
-		return s3Service.uploadFile(multipartFile);
+		return s3Service.uploadFile(imageService.getInputStream(jpgImage, "jpg"), filename, "image");
+
 	}
 
 }
